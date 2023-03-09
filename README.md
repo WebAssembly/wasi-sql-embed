@@ -1,24 +1,14 @@
-# [Example WASI proposal]
-
-This template can be used to start a new proposal, which can then be proposed in the WASI Subgroup meetings.
-
-The sections below are recommended. However, every proposal is different, and the community can help you flesh out the proposal, so don't block on having something filled in for each one of them.
-
-Thank you to the W3C Privacy CG for the [inspiration](https://github.com/privacycg/template)!
-
-# [Title]
+# WASI SQL Embedding
 
 A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) API.
 
 ### Current Phase
 
-[Fill in the current phase, e.g. Phase 1]
+WASI SQL Embedding is currently in [Phase 1](https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-1---feature-proposal-cg).
 
 ### Champions
 
-- [Champion 1]
-- [Champion 2]
-- [etc.]
+- Kyle Brown
 
 ### Phase 4 Advancement Criteria
 
@@ -43,11 +33,20 @@ TODO before entering Phase 2.
 
 ### Introduction
 
-[The "executive summary" or "abstract". Explain in a few sentences what the goals of the project are, and a brief overview of how the solution works. This should be no more than 1-2 paragraphs.]
+WASI SQL Embedding defines a way for WASM components to be embedded in SQL databases as extensions.
+It defines the interfaces for various user objects (like User-Defined Functions a.k.a. UDFs) that can be exported by extensions and called from the database, the way component value types and SQL column types are mapped, and the facilities user objects are allowed to access/use.
 
-### Goals [or Motivating Use Cases, or Scenarios]
+WASI SQL Embedding abstracts over different SQL dialects and their types.
+Extensions may either explicitly call out the SQL types of their arguments and results or allow them to be inferred.
+If an Extension refers to a SQL type that is not supported by a given dialect, the embedder may decide to infer a type that they do support.
 
-[What is the end-user need which this project aims to address?]
+WASI SQL Embedding extension components will have some limited access to capabilities like random number generation,
+but not any capabilities that access the file system or network.
+Code that relies on the network or file-system should satisfy those requirements using virtualizations.
+
+### Goals
+
+The primary goal of WASI SQL Embedding is to enable users to define Wasm-based SQL Extensions in a standard way.
 
 ### Non-goals
 
@@ -59,9 +58,30 @@ The full API documentation can be found [here](wasi-proposal-template.md).
 
 [Walk through of how someone would use this API.]
 
-#### [Use case 1]
+#### Unicode Functionality
 
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+If a user wanted to perform unicode normalization on some text in a database,
+it would be convenient if they could write a simple extension that takes advantage of existing libraries.
+
+e.g.
+```rust
+use unicode_normalization::UnicodeNormalization;
+
+fn normalize(input: String) -> String {
+  input.nfc().collect::<String>()
+}
+```
+> **Note**
+> Bindings-related code and configuration is omitted
+
+After compiling this using WIT-based tooling, they would end up with a fully self-describing database extension.
+
+They could load this into a database and normalize user names like so.
+```sql
+CREATE EXTENSION unicode FROM "https://...";
+...
+SELECT unicode_normalize(name) FROM users;
+```
 
 #### [Use case 2]
 
