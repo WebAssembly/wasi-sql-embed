@@ -8,7 +8,7 @@ WASI SQL Embedding is currently in [Phase 1](https://github.com/WebAssembly/WASI
 
 ### Champions
 
-- Kyle Brown
+- Robin Brown
 
 ### Phase 4 Advancement Criteria
 
