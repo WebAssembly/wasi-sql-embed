@@ -4,7 +4,7 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-WASI SQL Embedding is currently in [Phase 1](https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-1---feature-proposal-cg).
+WASI SQL Embedding is currently in [Phase 1](https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md#phase-1---feature-proposal-cg).
 
 ### Champions
 
